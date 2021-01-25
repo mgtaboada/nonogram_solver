@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import get_nonogram
 EMPTY = 0
 PAINT = 1
 CROSS = -1
@@ -12,6 +13,10 @@ class Cell:
         return x[self.status]
     def __repr__(self):
         return self.__str__()
+class UnsolvedTable:
+    def __init__(self,url):
+        self.dim,self.cols_hints,self.rows_hints = get_nonogram.get_nonogram(url)
+        self.table = np.zeros((dim,dim))
 
 class Table:
     def __init__(self,dim):
@@ -90,37 +95,21 @@ def find_consecutives(row,condition):
         if c!= 0:
             consecutives.append(c)
         return consecutives,coordinates
+
+def combinations(size,hints):
+    c = []
+    l = size(hints) +1
+    tot = size - sum(hints)
+    finish = False
+    last = np.array([ 0 for i in range(l)])
+    last[1:-1] = 1
+    last[-1] = tot-(l-2)
+    while not finish:
+
+
 def apply_hints(row,hints):
-    touched = []
-    # find gaps
-    gaps,coords = find_consecutives(row,lambda x: x != CROSS)
-    # fill what we know of the gaps:
-    cur_hint = 0
-    for i,gap in enumerate(gaps):
-        if gap < hints[cur_hint]: # the gap is not fillable
-            row[coords[i]:coords[i]+gap] = CROSS
-            touched.extend(range(coords[i],coords[i]+gap))
-        elif gap == hints[cur_hint]:
-            row[coords[i]:coords[i]+gap] = PAINT
-            touched.extend(range(coords[i],coords[i]+gap))
-            cur_hint += 1
-        else: # gap > current hint
-            #
-
-
-    # check if the hints fill the row
-    if sum(hints) + len(hints) -1 == np.size(row):
-        i = 0
-        for x in hints:
-            for j in range(x):
-                row[i] = PAINT
-                touched.append(i)
-                i+=1
-            if (i < np.size(row)):
-                row[i] = CROSS
-                touched.append(i)
-                i += 1
-
+    """Generate all combinations given the hints, keep
+    the ones that stay over all combinations"""
 
 
 
